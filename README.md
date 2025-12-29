@@ -30,11 +30,13 @@ The backend is implemented using FastAPI + PyTorch, exposing an API endpoint tha
 
 - Note: torch and torchvision are installed separately due to system‑specific builds.
 
-3. Run the FastAPI Server
+4. Train the MNIST model (if not already trained)
+   - `python3 train_mnist.py`
 
-- uvicorn main:app --reload
+5. Run the FastAPI server
+   - `uvicorn main:app --reload`
 
-4. The backend will be available at:
+6. The backend will be available at:
 
 - API: http://127.0.0.1:8000/attack
 - Swagger UI: http://127.0.0.1:8000/docs
