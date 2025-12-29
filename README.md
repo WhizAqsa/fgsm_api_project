@@ -1,86 +1,91 @@
-# FGSM Adversarial Attack API (FastAPI + PyTorch)
+## Adversarial Attack Demo with FGSM
 
-## Overview
-This project implements the **Fast Gradient Sign Method (FGSM)** adversarial attack
-and exposes it through a **REST API** using **FastAPI**. The system evaluates the
-robustness of a pretrained **MNIST classification model** against adversarial examples.
+This project demonstrates adversarial attacks on neural networks using the Fast Gradient Sign Method (FGSM). A trained MNIST classifier is used to show how small, carefully crafted perturbations can cause a model to misclassify an image.
 
-FGSM is a gradient-based attack that introduces small but carefully crafted
-perturbations to input images, causing deep learning models to misclassify them.
+### 🎯 Project Overview
+The backend is implemented using FastAPI + PyTorch, exposing an API endpoint that:
 
----
+- Takes an image as input
+- Applies FGSM with a configurable epsilon value
+- Returns predictions, attack success status
 
-## Objectives
-- Implement FGSM in PyTorch using a modular design
-- Evaluate the robustness of a pretrained MNIST model
-- Build a REST API to perform adversarial attacks on uploaded images
-- Return predictions, attack success status, and adversarial images
+### 🛠 Technology Stack
 
----
+- FastAPI — REST API framework
+- PyTorch — Model & FGSM implementation
+- Torchvision — Image transformations
+- Uvicorn — ASGI server
+- PIL — Image processing
 
-## Project Structure
-fgsm_api_project/
-│
-├── fgsm.py # FGSM attack class
-├── model.py # MNIST CNN model
-├── app_fgsm.py # FastAPI application
-├── requirements.txt # Dependencies
-├── outputs/ # Results & screenshots
-└── README.md
+### 🚀 How to Run Locally (Backend)
+1. Clone the Repository
 
+- git clone <your-repo-url>
+- cd <project-folder>
 
----
+2. Install Dependencies
 
-## Fast Gradient Sign Method (FGSM)
-FGSM generates adversarial examples using the following formula:
+- pip install -r requirements.txt
+- pip install torch torchvision
 
-\[
-x_{adv} = x + \epsilon \cdot \text{sign}(\nabla_x J(\theta, x, y))
-\]
+Note: torch and torchvision are installed separately due to system‑specific builds.
 
-Where:
-- `x` is the original input image
-- `y` is the true label
-- `J` is the loss function
-- `ε (epsilon)` controls the attack strength
+3. Run the FastAPI Server
 
----
+- uvicorn main:app --reload
 
-## FGSM Implementation
-The FGSM attack is implemented in `fgsm.py` using PyTorch’s automatic differentiation.
-The attack computes the gradient of the loss with respect to the input image and
-perturbs the image in the direction of the gradient sign.
+4. The backend will be available at:
 
----
+- API: http://127.0.0.1:8000/attack
+- Swagger UI: http://127.0.0.1:8000/docs
 
-## Model and Evaluation
-- A pretrained CNN model is used for MNIST digit classification
-- The model’s accuracy is evaluated before and after applying FGSM
-- Increasing epsilon results in a noticeable drop in accuracy, demonstrating
-  vulnerability to adversarial attacks
+### 📡 API Endpoint Details
+- POST /attack
+- Inputs (multipart/form-data):
+  - file: MNIST image (JPG/PNG)
+  - epsilon: perturbation strength (float)
 
-Only final results and screenshots are included, as required.
+- Response Example:
+{
+  "clean_prediction": 9,
+  "adversarial_prediction": 3,
+  "attack_success": true,
+  "attack_strength_percent": 18.91,
+  "adversarial_image_base64": "<base64_string>"
+}
 
----
+### What is FGSM?
 
-## FastAPI Endpoint
+The Fast Gradient Sign Method (FGSM) is an adversarial attack technique that slightly alters an input image in order to mislead a neural network. It works by calculating the gradient of the loss with respect to the input pixels and then modifying the image in the direction that increases the loss.
 
-### POST `/attack`
+The modification is scaled by a parameter called epsilon (ε), which controls how strong the perturbation is. Even though the perturbation is often visually imperceptible to humans, it can cause a well‑trained model to make incorrect predictions.
 
-**Input:**
-- Image file (PNG or JPEG)
-- Epsilon value (default = 0.1)
+FGSM is computationally efficient and is widely used to evaluate model robustness against adversarial inputs.
 
-**Output (JSON):**
-- Clean Prediction
-- Adversarial Prediction
-- Attack Success Status
-- Base64-encoded adversarial image
+### 📊 Observations & Results
+1. Observed Trend:
+Attack success percentage follows a non‑linear pattern as epsilon increases.
 
----
+2. Low Epsilon (ε ≈ 0.1–0.2):
+- Perturbations are very small
+- Model predictions mostly remain unchanged
+- Attack success rate is low
 
-## How to Run
+3. Medium Epsilon (ε ≈ 0.4–0.6):
+- Perturbations become effective but still structured
+- Model is most vulnerable
+- Attack success rate reaches its peak
 
-### Install Dependencies
-```bash
-pip install -r requirements.txt
+4. High Epsilon (ε > 0.6):
+- Perturbations become too strong and noisy
+- Adversarial patterns lose directionality
+- Attack success rate starts to decrease
+
+5. Summary:
+- Initial low success → increases to an optimal point → then decreases
+- Higher epsilon increases perturbation strength only up to an optimal threshold
+- Very high epsilon values introduce visible noise and can reduce attack effectiveness
+
+### 🎓 Conclusion
+
+This project demonstrates how fragile neural networks can be when exposed to adversarial perturbations. FGSM provides a simple yet powerful method to test model robustness and highlights the importance of secure and robust AI systems. The observed trend where attack success peaks at moderate epsilon values and then declines suggests that there is an optimal perturbation strength for adversarial attacks on this MNIST classifier.
