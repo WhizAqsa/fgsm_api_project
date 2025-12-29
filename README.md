@@ -20,15 +20,15 @@ The backend is implemented using FastAPI + PyTorch, exposing an API endpoint tha
 ### 🚀 How to Run Locally (Backend)
 1. Clone the Repository
 
-- git clone <your-repo-url>
-- cd <project-folder>
+- git clone `<your-repo-url>`
+- cd `<project-folder>`
 
 2. Install Dependencies
 
 - pip install -r requirements.txt
 - pip install torch torchvision
 
-Note: torch and torchvision are installed separately due to system‑specific builds.
+- Note: torch and torchvision are installed separately due to system‑specific builds.
 
 3. Run the FastAPI Server
 
@@ -46,13 +46,13 @@ Note: torch and torchvision are installed separately due to system‑specific bu
   - epsilon: perturbation strength (float)
 
 - Response Example:
-{
-  "clean_prediction": 9,
-  "adversarial_prediction": 3,
-  "attack_success": true,
-  "attack_strength_percent": 18.91,
-  "adversarial_image_base64": "<base64_string>"
-}
+  - {
+      "clean_prediction": 9,
+      "adversarial_prediction": 3,
+      "attack_success": true,
+      "attack_strength_percent": 18.91,
+      "adversarial_image_base64": "<base64_string>"
+    }
 
 ### What is FGSM?
 
